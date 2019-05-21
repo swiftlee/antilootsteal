@@ -1,0 +1,5 @@
+name: Antilootsteal
+version: ${project.version}
+main: com.phaseos.antilootsteal.Antilootsteal
+authors: [SwiftLee]
+description: Per player loot system preventing others from stealing the loot from dead players.
