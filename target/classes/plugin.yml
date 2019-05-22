@@ -1,5 +1,5 @@
 name: MineRiftALS
-version: ${project.version}
+version: 1.0-SNAPSHOT
 main: com.phaseos.antilootsteal.Antilootsteal
 authors: [SwiftLee]
 description: Per player loot system preventing others from stealing the loot from dead players.
