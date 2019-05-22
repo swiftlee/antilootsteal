@@ -1,6 +1,4 @@
 com\phaseos\listener\GeneralListener$1.class
 com\phaseos\listener\GeneralListener.class
-com\phaseos\util\PlayerUtils.class
 com\phaseos\antilootsteal\Antilootsteal.class
-com\phaseos\listener\GeneralListener$2.class
 com\phaseos\util\TextUtils.class
