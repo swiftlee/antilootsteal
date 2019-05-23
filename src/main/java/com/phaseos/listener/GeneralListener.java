@@ -6,12 +6,12 @@ import com.phaseos.util.TextUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -28,9 +28,23 @@ public class GeneralListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onInventoryPickUp(InventoryPickupItemEvent e) {
-        if (e.getInventory().getType() != InventoryType.PLAYER) {
+        if (e.getInventory().getType() == InventoryType.HOPPER) {
+            if (e.getItem().hasMetadata("MineRiftALS")) {
+                String[] vals = e.getItem().getMetadata("MineRiftALS").get(0).asString().split("\\?");
+                long time = Long.parseLong(vals[0]) / 1_000_000_000L;
+                long now = System.nanoTime() / 1_000_000_000L;
+                if (Math.abs(now - time) < 15) {
+                    e.setCancelled(true);
+                }
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onHopperPickup(InventoryPickupItemEvent e) {
+        if (e.getInventory().getType() == InventoryType.HOPPER) {
             if (e.getItem().hasMetadata("MineRiftALS")) {
                 String[] vals = e.getItem().getMetadata("MineRiftALS").get(0).asString().split("\\?");
                 long time = Long.parseLong(vals[0]) / 1_000_000_000L;
@@ -54,7 +68,7 @@ public class GeneralListener implements Listener {
                 if (!id.equals(comparisonId)) {
                     if (!cooldown.contains(e.getPlayer().getUniqueId())) {
                         cooldown.add(id);
-                        e.getPlayer().sendMessage(TextUtils.fmt(plugin.getConfig().getString("loot-message")).replace("{killer}", Bukkit.getOfflinePlayer(comparisonId).getName()).replace("{seconds}", String.valueOf((int) (now - time))));
+                        e.getPlayer().sendMessage(TextUtils.fmt(plugin.getConfig().getString("loot-message")).replace("{killer}", Bukkit.getOfflinePlayer(comparisonId).getName()).replace("{seconds}", String.valueOf((int) (15 - (now - time)))));
                         new BukkitRunnable() {
                             @Override
                             public void run() {
